@@ -31,6 +31,8 @@ data class InlineKeyboardMarkup internal constructor(
         fun createSingleRowKeyboard(vararg button: InlineKeyboardButton) = InlineKeyboardMarkup(listOf(button.toList()))
         fun create(buttons: List<List<InlineKeyboardButton>>) = InlineKeyboardMarkup(buttons)
         fun create(vararg buttonsRow: List<InlineKeyboardButton>) = InlineKeyboardMarkup(buttonsRow.toList())
+        fun createSingleColumnKeyboard(buttons: List<InlineKeyboardButton>) = InlineKeyboardMarkup(buttons.map { listOf(it) })
+        fun createSingleColumnKeyboard(vararg button: InlineKeyboardButton) = InlineKeyboardMarkup(button.map { listOf(it) })
     }
 
     override fun toString(): String = GSON.toJson(this)
