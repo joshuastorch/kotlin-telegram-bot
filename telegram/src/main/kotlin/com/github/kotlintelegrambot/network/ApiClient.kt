@@ -1021,6 +1021,7 @@ class ApiClient(
         messageId: Long?,
         inlineMessageId: String?,
         caption: String,
+        parseMode: ParseMode?,
         replyMarkup: ReplyMarkup?
     ): Call<Response<Message>> {
 
@@ -1029,6 +1030,7 @@ class ApiClient(
             messageId,
             inlineMessageId,
             caption,
+            parseMode,
             replyMarkup
         )
     }
