@@ -931,12 +931,14 @@ class Bot private constructor(
         messageId: Long? = null,
         inlineMessageId: String? = null,
         caption: String,
+        parseMode: ParseMode? = null,
         replyMarkup: ReplyMarkup? = null
     ) = apiClient.editMessageCaption(
         chatId,
         messageId,
         inlineMessageId,
         caption,
+        parseMode,
         replyMarkup
     ).call()
 

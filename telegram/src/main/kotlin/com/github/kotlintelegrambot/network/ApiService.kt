@@ -606,6 +606,7 @@ interface ApiService {
         @Field("message_id") messageId: Long?,
         @Field("inline_message_id") inlineMessageId: String?,
         @Field("caption") caption: String,
+        @Field("parse_mode") parseMode: ParseMode?,
         @Field("reply_markup") replyMarkup: ReplyMarkup? = null
     ): Call<Response<Message>>
 
