@@ -610,16 +610,6 @@ interface ApiService {
         @Field("reply_markup") replyMarkup: ReplyMarkup? = null
     ): Call<Response<Message>>
 
-    @FormUrlEncoded
-    @POST("editMessageMedia")
-    fun editMessageMedia(
-        @Field("chat_id") chatId: Long?,
-        @Field("message_id") messageId: Long?,
-        @Field("inline_message_id") inlineMessageId: String?,
-        @Field("media") media: InputMedia,
-        @Field("reply_markup") replyMarkup: ReplyMarkup? = null
-    ): Call<Response<Message>>
-
     @Multipart
     @POST("editMessageMedia")
     fun editMessageMedia(
@@ -628,7 +618,7 @@ interface ApiService {
         @Part("inline_message_id") inlineMessageId: RequestBody?,
         @Part("media") media: RequestBody,
         @Part("reply_markup") replyMarkup: RequestBody? = null,
-        @Part photo: MultipartBody.Part
+        @Part file: MultipartBody.Part?
     ): Call<Response<Message>>
 
     @FormUrlEncoded

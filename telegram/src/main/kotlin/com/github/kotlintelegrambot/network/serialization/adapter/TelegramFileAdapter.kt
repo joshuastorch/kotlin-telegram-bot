@@ -13,6 +13,6 @@ class TelegramFileAdapter : JsonSerializer<TelegramFile> {
     override fun serialize(src: TelegramFile, typeOfSrc: Type, context: JsonSerializationContext): JsonElement = when (src) {
         is ByFileId -> context.serialize(src.fileId, String::class.java)
         is ByUrl -> context.serialize(src.url, String::class.java)
-        is ByFile -> context.serialize("attach://${src.file.name}")
+        is ByFile -> context.serialize("attach://file")
     }
 }

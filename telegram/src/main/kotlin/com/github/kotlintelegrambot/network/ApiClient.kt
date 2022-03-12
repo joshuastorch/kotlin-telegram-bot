@@ -1045,28 +1045,14 @@ class ApiClient(
         media: InputMedia,
         replyMarkup: ReplyMarkup?
     ): Call<Response<Message>> {
-        // when a file is sent it is required to send the request as multipart
-        return if (media.media is ByFile) {
-            service.editMessageMedia(
-                if (chatId != null) convertString(chatId.toString()) else null,
-                if (messageId != null) convertString(messageId.toString()) else null,
-                if (inlineMessageId != null) convertString(inlineMessageId.toString()) else null,
-                convertJson(GsonFactory.createForMultipartBodyFactory().toJson(
-                    // use ByFileId as a dumb workaround to pass the string
-                    InputMediaPhoto(ByFileId("attach://photo"), media.caption, media.parseMode))
-                ),
-                if (replyMarkup != null) convertJson(replyMarkup.toString()) else null,
-                convertFile("photo", (media.media as ByFile).file)
-            )
-        } else {
-            service.editMessageMedia(
-                chatId,
-                messageId,
-                inlineMessageId,
-                media,
-                replyMarkup
-            )
-        }
+        return service.editMessageMedia(
+            if (chatId != null) convertString(chatId.toString()) else null,
+            if (messageId != null) convertString(messageId.toString()) else null,
+            if (inlineMessageId != null) convertString(inlineMessageId.toString()) else null,
+            convertJson(GsonFactory.createForMultipartBodyFactory().toJson(media)),
+            if (replyMarkup != null) convertJson(replyMarkup.toString()) else null,
+            if (media.media is ByFile) convertFile("file", (media.media as ByFile).file) else null
+        )
     }
 
     fun editMessageReplyMarkup(
