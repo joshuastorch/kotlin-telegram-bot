@@ -22,6 +22,7 @@ import com.github.kotlintelegrambot.entities.dice.DiceEmoji
 import com.github.kotlintelegrambot.entities.files.File
 import com.github.kotlintelegrambot.entities.inlinequeryresults.InlineQueryResult
 import com.github.kotlintelegrambot.entities.inputmedia.InputMedia
+import com.github.kotlintelegrambot.entities.inputmedia.InputMediaPhoto
 import com.github.kotlintelegrambot.entities.inputmedia.MediaGroup
 import com.github.kotlintelegrambot.entities.payments.LabeledPrice
 import com.github.kotlintelegrambot.entities.payments.ShippingOption
@@ -1044,14 +1045,28 @@ class ApiClient(
         media: InputMedia,
         replyMarkup: ReplyMarkup?
     ): Call<Response<Message>> {
-
-        return service.editMessageMedia(
-            chatId,
-            messageId,
-            inlineMessageId,
-            media,
-            replyMarkup
-        )
+        // when a file is sent it is required to send the request as multipart
+        return if (media.media is ByFile) {
+            service.editMessageMedia(
+                if (chatId != null) convertString(chatId.toString()) else null,
+                if (messageId != null) convertString(messageId.toString()) else null,
+                if (inlineMessageId != null) convertString(inlineMessageId.toString()) else null,
+                convertJson(GsonFactory.createForMultipartBodyFactory().toJson(
+                    // use ByFileId as a dumb workaround to pass the string
+                    InputMediaPhoto(ByFileId("attach://photo"), media.caption, media.parseMode))
+                ),
+                if (replyMarkup != null) convertJson(replyMarkup.toString()) else null,
+                convertFile("photo", (media.media as ByFile).file)
+            )
+        } else {
+            service.editMessageMedia(
+                chatId,
+                messageId,
+                inlineMessageId,
+                media,
+                replyMarkup
+            )
+        }
     }
 
     fun editMessageReplyMarkup(
