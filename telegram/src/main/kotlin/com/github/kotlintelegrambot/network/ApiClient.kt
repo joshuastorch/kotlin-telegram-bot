@@ -1,28 +1,11 @@
 package com.github.kotlintelegrambot.network
 
-import com.github.kotlintelegrambot.entities.BotCommand
-import com.github.kotlintelegrambot.entities.Chat
-import com.github.kotlintelegrambot.entities.ChatAction
-import com.github.kotlintelegrambot.entities.ChatMember
-import com.github.kotlintelegrambot.entities.ChatPermissions
-import com.github.kotlintelegrambot.entities.InlineKeyboardMarkup
-import com.github.kotlintelegrambot.entities.Message
-import com.github.kotlintelegrambot.entities.MessageEntity
-import com.github.kotlintelegrambot.entities.ParseMode
-import com.github.kotlintelegrambot.entities.ReplyMarkup
-import com.github.kotlintelegrambot.entities.TelegramFile
-import com.github.kotlintelegrambot.entities.TelegramFile.ByFile
-import com.github.kotlintelegrambot.entities.TelegramFile.ByFileId
-import com.github.kotlintelegrambot.entities.TelegramFile.ByUrl
-import com.github.kotlintelegrambot.entities.Update
-import com.github.kotlintelegrambot.entities.User
-import com.github.kotlintelegrambot.entities.UserProfilePhotos
-import com.github.kotlintelegrambot.entities.WebhookInfo
+import com.github.kotlintelegrambot.entities.*
+import com.github.kotlintelegrambot.entities.TelegramFile.*
 import com.github.kotlintelegrambot.entities.dice.DiceEmoji
 import com.github.kotlintelegrambot.entities.files.File
 import com.github.kotlintelegrambot.entities.inlinequeryresults.InlineQueryResult
 import com.github.kotlintelegrambot.entities.inputmedia.InputMedia
-import com.github.kotlintelegrambot.entities.inputmedia.InputMediaPhoto
 import com.github.kotlintelegrambot.entities.inputmedia.MediaGroup
 import com.github.kotlintelegrambot.entities.payments.LabeledPrice
 import com.github.kotlintelegrambot.entities.payments.ShippingOption
@@ -40,19 +23,15 @@ import com.github.kotlintelegrambot.network.retrofit.converters.InputMediaConver
 import com.github.kotlintelegrambot.network.serialization.GsonFactory
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.io.File as SystemFile
-import java.net.Proxy
-import java.nio.file.Files
-import java.util.concurrent.TimeUnit
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.net.Proxy
+import java.nio.file.Files
+import java.util.concurrent.TimeUnit
+import java.io.File as SystemFile
 
 private val PLAIN_TEXT_MIME = MediaType.parse("text/plain")
 private val APPLICATION_JSON_MIME = MediaType.parse("application/json")
@@ -448,7 +427,7 @@ class ApiClient(
 
         return service.sendAnimation(
             convertString(chatId.toString()),
-            convertFile("video", animation),
+            convertFile("animation", animation),
             if (duration != null) convertString(duration.toString()) else null,
             if (width != null) convertString(width.toString()) else null,
             if (height != null) convertString(height.toString()) else null,
