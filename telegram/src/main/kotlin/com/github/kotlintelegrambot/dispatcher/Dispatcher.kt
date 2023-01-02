@@ -8,7 +8,10 @@ import com.github.kotlintelegrambot.errors.TelegramError
 import com.github.kotlintelegrambot.logging.LogLevel
 import com.github.kotlintelegrambot.types.DispatchableObject
 import java.util.concurrent.BlockingQueue
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 class Dispatcher(
     val updatesQueue: BlockingQueue<DispatchableObject> = LinkedBlockingQueue()
@@ -53,22 +56,32 @@ class Dispatcher(
     }
 
     private fun handleUpdate(update: Update) {
-        commandHandlers
-            .forEach {
-                if (update.consumed) {
-                    return
-                }
-                if (!it.checkUpdate(update)) {
-                    return@forEach
-                }
-                try {
-                    it.handlerCallback(bot, update)
-                } catch (exc: Exception) {
-                    if (logLevel.shouldLogErrors()) {
-                        exc.printStackTrace()
+        CompletableFuture.runAsync {
+            commandHandlers
+                .forEach {
+                    if (update.consumed) {
+                        return@runAsync
+                    }
+                    if (!it.checkUpdate(update)) {
+                        return@forEach
+                    }
+                    try {
+                        CompletableFuture.runAsync {
+                            try {
+                                it.handlerCallback(bot, update)
+                            } catch (exc: Exception) {
+                                if (logLevel.shouldLogErrors()) {
+                                    exc.printStackTrace()
+                                }
+                            }
+                        }.get(30, TimeUnit.SECONDS)
+                    } catch (e: TimeoutException) {
+                        if (logLevel.shouldLogErrors()) {
+                            println("Handler Timeout!")
+                        }
                     }
                 }
-            }
+        }
     }
 
     private fun handleError(error: TelegramError) {
